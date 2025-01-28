@@ -1,107 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import SessionTimer from './SessionTimer';
 
-const SessionController = ({ 
-  isRecording, 
-  activeSection, 
-  setActiveSection, 
-  completedSections, 
-  setCompletedSections 
-}) => {
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+const SessionController = ({ isRecording }) => {
+  const [activeSection, setActiveSection] = useState(0);
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [sectionTimes, setSectionTimes] = useState({});
 
   const sections = [
-    { id: 1, title: "Opening Discussion", duration: 10 },
-    { id: 2, title: "KPI Review", duration: 10 },
-    { id: 3, title: "Call Review", duration: 40 },
-    { id: 4, title: "Set Focus Area", duration: 10 }
+    { id: 1, title: "Opening Discussion", duration: "5-10" },
+    { id: 2, title: "KPI Review", duration: "5-10" },
+    { id: 3, title: "Call Review", duration: "30-40" },
+    { id: 4, title: "Set Focus Area", duration: "5-10" }
   ];
 
   useEffect(() => {
-    if (isRecording && activeSection === 0) {
+    if (isRecording && !sessionStartTime) {
+      setSessionStartTime(new Date());
       setActiveSection(1);
-      setIsTimerRunning(true);
     }
-  }, [isRecording, activeSection, setActiveSection]);
+  }, [isRecording, sessionStartTime]);
 
-  const handleSectionComplete = () => {
-    if (activeSection > 0 && activeSection <= sections.length) {
-      setCompletedSections([...completedSections, activeSection]);
-      if (activeSection < sections.length) {
-        setActiveSection(activeSection + 1);
-      } else {
-        setIsTimerRunning(false);
-        setActiveSection(0);
-      }
+  const handleNextSection = () => {
+    if (activeSection < sections.length) {
+      // Record completion time for current section
+      setSectionTimes(prev => ({
+        ...prev,
+        [activeSection]: {
+          completedAt: new Date(),
+          duration: getDuration(activeSection)
+        }
+      }));
+      setActiveSection(activeSection + 1);
     }
   };
 
-  const handleManualComplete = () => {
-    handleSectionComplete();
+  const getDuration = (sectionId) => {
+    if (!sectionTimes[sectionId]?.completedAt) return "";
+    const startTime = sectionId === 1 ? sessionStartTime : sectionTimes[sectionId - 1]?.completedAt;
+    const endTime = sectionTimes[sectionId]?.completedAt;
+    const minutes = Math.round((endTime - startTime) / (1000 * 60));
+    return `${minutes} mins`;
   };
 
-  const toggleTimer = () => {
-    setIsTimerRunning(!isTimerRunning);
-  };
-
-  if (activeSection === 0) {
-    return null;
-  }
+  if (!isRecording) return null;
 
   return (
-    <div className="session-controls bg-white rounded-lg shadow-sm p-4 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Session Timer</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={toggleTimer}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              isTimerRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-            } text-white`}
+    <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div className="space-y-4">
+        {sections.map((section) => (
+          <div 
+            key={section.id}
+            className={`flex items-center p-3 rounded-lg ${
+              activeSection === section.id 
+                ? 'bg-blue-50 border-2 border-blue-500'
+                : section.id < activeSection
+                ? 'bg-green-50'
+                : 'bg-gray-50'
+            }`}
           >
-            {isTimerRunning ? 'Pause Timer' : 'Resume Timer'}
-          </button>
-          <button
-            onClick={handleManualComplete}
-            className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            Complete Section
-          </button>
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        {activeSection > 0 && activeSection <= sections.length && (
-          <>
-            <SessionTimer
-              duration={sections[activeSection - 1].duration}
-              isRunning={isTimerRunning}
-              onComplete={handleSectionComplete}
-            />
-            <div>
-              <h4 className="font-medium text-gray-700">
-                Current Section: {sections[activeSection - 1].title}
-              </h4>
-              <p className="text-sm text-gray-500">
-                Section {activeSection} of {sections.length}
-              </p>
-              <div className="mt-2 flex gap-1">
-                {sections.map((section, index) => (
-                  <div
-                    key={section.id}
-                    className={`w-6 h-1 rounded ${
-                      completedSections.includes(index + 1)
-                        ? 'bg-green-500'
-                        : index + 1 === activeSection
-                        ? 'bg-blue-500'
-                        : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+              activeSection === section.id
+                ? 'bg-blue-500 text-white'
+                : section.id < activeSection
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-300 text-white'
+            }`}>
+              {section.id}
             </div>
-          </>
-        )}
+            <div className="flex-grow">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">{section.title}</span>
+                <span className="text-sm text-gray-600">
+                  {sectionTimes[section.id]?.duration || `Target: ${section.duration} mins`}
+                </span>
+              </div>
+              {activeSection === section.id && (
+                <button
+                  onClick={handleNextSection}
+                  className="mt-2 px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm"
+                >
+                  Complete & Next Section →
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
