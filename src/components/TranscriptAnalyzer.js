@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import OpenAI from "openai";
-import "../index.css"; 
+import "../index.css";
 import VoiceRecorder from './VoiceRecorder';
 
 const openai = new OpenAI({
@@ -95,81 +95,83 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
       <div className="card">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">One on One Analyzer</h1>
         
-        {/* Modern Coaching Guide Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-          <div className="border-b border-gray-100 p-4">
-            <h2 className="text-lg font-semibold text-gray-800">Coaching Session Guide</h2>
+        {/* Enhanced Coaching Guide Section */}
+        <div className="coaching-guide">
+          <div className="guide-header">
+            <h2 className="text-xl font-bold text-gray-900">Coaching Session Guide</h2>
           </div>
           
-          <div className="p-6 space-y-6">
+          <div className="guide-content">
             {/* Section 1 */}
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-sm">
-                1
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-gray-800 font-semibold flex justify-between items-center">
-                  Opening Discussion
-                  <span className="text-sm text-blue-600 font-medium">5-10 mins</span>
-                </h3>
-                <p className="text-gray-600 mt-1">Open-ended discussion to understand agent's perspective</p>
+            <div className="section-item">
+              <div className="section-number">1</div>
+              <div className="section-content">
+                <div className="section-header">
+                  <span className="section-title">Opening Discussion</span>
+                  <span className="time-badge">5-10 mins</span>
+                </div>
+                <div className="section-details">
+                  Open-ended discussion to understand agent's perspective
+                </div>
               </div>
             </div>
 
             {/* Section 2 */}
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-sm">
-                2
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-gray-800 font-semibold flex justify-between items-center">
-                  KPI Review
-                  <span className="text-sm text-blue-600 font-medium">5-10 mins</span>
-                </h3>
-                <div className="mt-2 space-y-2">
-                  <p className="text-gray-600">• Review performance metrics</p>
-                  <p className="text-gray-600">• Focus on previous session's action items</p>
-                  <p className="text-gray-600">• Identify lowest hanging fruit KPI</p>
+            <div className="section-item">
+              <div className="section-number">2</div>
+              <div className="section-content">
+                <div className="section-header">
+                  <span className="section-title">KPI Review</span>
+                  <span className="time-badge">5-10 mins</span>
+                </div>
+                <div className="section-details">
+                  <ul>
+                    <li>Review performance metrics</li>
+                    <li>Focus on previous session's action items</li>
+                    <li>Identify lowest hanging fruit KPI</li>
+                  </ul>
                 </div>
               </div>
             </div>
 
             {/* Section 3 */}
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-sm">
-                3
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-gray-800 font-semibold flex justify-between items-center">
-                  Call Review
-                  <span className="text-sm text-blue-600 font-medium">30-40 mins</span>
-                </h3>
-                <div className="mt-2 space-y-2">
-                  <p className="text-gray-600">• Review 30-50 minute call at 1.25x or 1.5x speed</p>
-                  <p className="text-gray-600">• Pause to discuss key moments</p>
-                  <p className="text-gray-600">• Grade script adherence and soft skills</p>
-                  <p className="text-gray-600">• Focus on rapport, objections, and closing</p>
+            <div className="section-item">
+              <div className="section-number">3</div>
+              <div className="section-content">
+                <div className="section-header">
+                  <span className="section-title">Call Review</span>
+                  <span className="time-badge">30-40 mins</span>
+                </div>
+                <div className="section-details">
+                  <ul>
+                    <li>Review 30-50 minute call at 1.25x or 1.5x speed</li>
+                    <li>Pause to discuss key moments</li>
+                    <li>Grade script adherence and soft skills</li>
+                    <li>Focus on rapport, objections, and closing</li>
+                  </ul>
                 </div>
               </div>
             </div>
 
             {/* Section 4 */}
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-sm">
-                4
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-gray-800 font-semibold flex justify-between items-center">
-                  Set Focus Area
-                  <span className="text-sm text-blue-600 font-medium">5-10 mins</span>
-                </h3>
-                <p className="text-gray-600 mt-2">Identify primary focus for next week:</p>
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                  <p className="text-gray-600">• KPI improvement</p>
-                  <p className="text-gray-600">• Script adherence</p>
-                  <p className="text-gray-600">• Objection handling</p>
-                  <p className="text-gray-600">• Call control</p>
-                  <p className="text-gray-600">• Rapport building</p>
+            <div className="section-item">
+              <div className="section-number">4</div>
+              <div className="section-content">
+                <div className="section-header">
+                  <span className="section-title">Set Focus Area</span>
+                  <span className="time-badge">5-10 mins</span>
+                </div>
+                <div className="section-details">
+                  <p>Identify primary focus for next week:</p>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <ul>
+                      <li>KPI improvement</li>
+                      <li>Script adherence</li>
+                      <li>Objection handling</li>
+                      <li>Call control</li>
+                      <li>Rapport building</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
