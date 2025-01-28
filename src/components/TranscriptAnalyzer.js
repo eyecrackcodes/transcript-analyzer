@@ -23,11 +23,11 @@ const TranscriptAnalyzer = () => {
             content: `As an expert final expense telesales coach, analyze 1:1 meetings against these KPIs:
 
 Required KPIs:
-- RPA's (revenue producing activities) per day: 120 minimum
+- RPA's (revenue producing activities) per day: 300 minimum average
 - Talk time: 3 hours minimum or 240 minutes minimum
-- Leads Taken: 8 per day minimum
-- Close rate: 25%
-- Average Anual premium: $900+
+- Leads Taken: 8 per day minimum on performance queue or 10 per day in training queue
+- Close rate: 25% in performance queue and 13% in training queue
+- Average Anual premium: Between $900-$1200. If below 900 then agent is selling on price if above 1200 their placement may be impacted.
 
 Key Areas to Assess:
 - Phone presence and energy level
