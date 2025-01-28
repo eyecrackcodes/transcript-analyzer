@@ -132,49 +132,120 @@ Any deviation from this exact JSON format will cause an error.`
       <div className="card">
         <h1>One on One Analyzer</h1>
         
-        {/* New Coaching Guide Section */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h2 className="text-lg font-semibold mb-2">Coaching Session Guide</h2>
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">1</span>
-              <div>
-                <p className="font-medium">Opening Discussion (5-10 mins)</p>
-                <p className="text-gray-600 text-sm">Start with: "How's everything going?"</p>
+        {/* Enhanced Coaching Guide Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-white p-6 rounded-xl mb-6 shadow-sm border border-blue-100">
+          <div className="flex items-center mb-4">
+            <h2 className="text-xl font-bold text-blue-800">Coaching Session Guide</h2>
+            <div className="ml-3 px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full">60 Minutes</div>
+          </div>
+          
+          <div className="space-y-6">
+            {/* Section 1 */}
+            <div className="relative pl-8 pb-6 border-l-2 border-blue-200">
+              <div className="absolute -left-3 top-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold shadow-md">1</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-blue-900">Opening Discussion</h3>
+                  <span className="text-blue-600 text-sm font-medium">5-10 mins</span>
+                </div>
+                <p className="text-gray-700 font-medium">"How's everything going?"</p>
+                <p className="text-gray-500 text-sm mt-1">Open-ended discussion to understand agent's perspective</p>
               </div>
             </div>
-            
-            <div className="flex items-start">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">2</span>
-              <div>
-                <p className="font-medium">KPI Review (5-10 mins)</p>
-                <p className="text-gray-600 text-sm">• Review performance metrics</p>
-                <p className="text-gray-600 text-sm">• Focus on previous session's action items</p>
-                <p className="text-gray-600 text-sm">• Identify lowest hanging fruit KPI</p>
+
+            {/* Section 2 */}
+            <div className="relative pl-8 pb-6 border-l-2 border-blue-200">
+              <div className="absolute -left-3 top-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold shadow-md">2</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-blue-900">KPI Review</h3>
+                  <span className="text-blue-600 text-sm font-medium">5-10 mins</span>
+                </div>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Review performance metrics
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Focus on previous session's action items
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Identify lowest hanging fruit KPI
+                  </li>
+                </ul>
               </div>
             </div>
-            
-            <div className="flex items-start">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">3</span>
-              <div>
-                <p className="font-medium">Call Review (30-40 mins)</p>
-                <p className="text-gray-600 text-sm">• Review 30-50 minute call at 1.25x or 1.5x speed</p>
-                <p className="text-gray-600 text-sm">• Use recording feature below</p>
-                <p className="text-gray-600 text-sm">• Pause to discuss key moments</p>
-                <p className="text-gray-600 text-sm">• Focus on: script adherence, rapport, objection handling</p>
+
+            {/* Section 3 */}
+            <div className="relative pl-8 pb-6 border-l-2 border-blue-200">
+              <div className="absolute -left-3 top-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold shadow-md">3</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-blue-900">Call Review</h3>
+                  <span className="text-blue-600 text-sm font-medium">30-40 mins</span>
+                </div>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Review 30-50 minute call at 1.25x or 1.5x speed
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Pause to discuss key moments
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Grade script adherence and soft skills
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Focus on rapport, objections, and closing
+                  </li>
+                </ul>
               </div>
             </div>
-            
-            <div className="flex items-start">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">4</span>
-              <div>
-                <p className="font-medium">Set Focus Area (5-10 mins)</p>
-                <p className="text-gray-600 text-sm">Identify primary focus for next week:</p>
-                <p className="text-gray-600 text-sm">• KPI improvement</p>
-                <p className="text-gray-600 text-sm">• Script adherence</p>
-                <p className="text-gray-600 text-sm">• Objection handling</p>
-                <p className="text-gray-600 text-sm">• Call control</p>
-                <p className="text-gray-600 text-sm">• Rapport building</p>
+
+            {/* Section 4 */}
+            <div className="relative pl-8">
+              <div className="absolute -left-3 top-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold shadow-md">4</span>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-blue-900">Set Focus Area</h3>
+                  <span className="text-blue-600 text-sm font-medium">5-10 mins</span>
+                </div>
+                <p className="text-gray-700 mb-2">Identify primary focus for next week:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    KPI improvement
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Script adherence
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Objection handling
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Call control
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></span>
+                    Rapport building
+                  </div>
+                </div>
               </div>
             </div>
           </div>
