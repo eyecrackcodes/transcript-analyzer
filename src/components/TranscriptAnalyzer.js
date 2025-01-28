@@ -5,6 +5,7 @@ import VoiceRecorder from './VoiceRecorder';
 import SessionTimer from './SessionTimer';
 import SessionController from './SessionController';
 
+
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -18,7 +19,6 @@ const TranscriptAnalyzer = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [completedSections, setCompletedSections] = useState([]);
-
 
   const analyzeWithAI = async (text) => {
     try {
@@ -39,7 +39,10 @@ Required Daily Production Standards:
   * Training Queue: 10 minimum with 18% close rate
 - Average Annual Premium: Target $900-$1200 (below = price selling, above = placement risk)
 
-IMPORTANT: Respond with ONLY this JSON format - no other text:
+IMPORTANT: 
+1. Respond with ONLY this JSON format - no other text
+2. The focus area must be ONE specific, measurable improvement that will have the biggest impact on performance
+3. Actions must be specific, measurable steps to improve that ONE focus area
 
 {
  "tone": "Brutally honest analysis of energy, conviction, and phone presence. Focus on whether they're bringing enough INTENSITY and HUNGER",
@@ -54,9 +57,9 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
  ],
  "challenge": "Most critical MONEY-LOSING behavior that's costing them sales",
  "weeklyFocus": {
-   "focus": "Specific improvement area that will make them the MOST MONEY fastest",
+   "focus": "ONE specific improvement area that will make them the MOST MONEY fastest",
    "actions": [
-     "Day 1-2: Specific drill/practice (must be measurable)",
+     "Day 1-2: Specific drill/practice focused on the ONE improvement area",
      "Day 3-4: Implementation with specific metrics to hit",
      "Day 5: Review numbers and adjust approach"
    ]
