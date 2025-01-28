@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import OpenAI from "openai";
-import "./styles.css"; // Update this line
+import "../index.css"; 
 import VoiceRecorder from './VoiceRecorder';
 
 const openai = new OpenAI({
