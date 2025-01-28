@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import OpenAI from "openai";
 import "../index.css";
 import VoiceRecorder from './VoiceRecorder';
+import SessionTimer from './SessionTimer';
+import SessionController from './SessionController';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
