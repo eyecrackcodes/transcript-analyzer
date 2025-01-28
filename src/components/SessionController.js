@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SessionTimer from './SessionTimer';
 
 const SessionController = () => {
-  const [activeSection, setActiveSection] = useState(0); // 0 means not started
+  const [activeSection, setActiveSection] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const sections = [
