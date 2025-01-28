@@ -7,6 +7,14 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
+// Rough approximation of tokens (4 characters ≈ 1 token)
+const estimateTokens = (text) => {
+  return Math.ceil(text.length / 4);
+};
+
+// Maximum allowed transcript length (leaving room for system prompt)
+const MAX_TRANSCRIPT_TOKENS = 6000; // Conservative limit to leave room for system message and response
+
 const TranscriptAnalyzer = () => {
   const [transcript, setTranscript] = useState("");
   const [summary, setSummary] = useState(null);
@@ -17,6 +25,11 @@ const TranscriptAnalyzer = () => {
     try {
       setLoading(true);
       setError(null);
+
+      const estimatedTokens = estimateTokens(text);
+      if (estimatedTokens > MAX_TRANSCRIPT_TOKENS) {
+        throw new Error(`Transcript is too long. Please reduce it to approximately ${MAX_TRANSCRIPT_TOKENS * 4} characters or less.`);
+      }
 
       const response = await openai.chat.completions.create({
         model: "gpt-4",
@@ -48,7 +61,8 @@ const TranscriptAnalyzer = () => {
           },
         ],
         temperature: 0.7,
-        response_format: { type: "json_object" }, // Enforce JSON response format
+        response_format: { type: "json_object" },
+        max_tokens: 1000
       });
 
       const responseContent = response.choices[0].message.content;
@@ -63,10 +77,27 @@ const TranscriptAnalyzer = () => {
       }
     } catch (apiError) {
       console.error("API Error:", apiError);
-      setError("Failed to analyze transcript. Please try again.");
+      const errorMessage = apiError.message.includes('maximum context length') 
+        ? "Transcript is too long. Please submit a shorter transcript."
+        : "Failed to analyze transcript. Please try again.";
+      setError(errorMessage);
       setSummary(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTranscriptChange = (e) => {
+    const newText = e.target.value;
+    setTranscript(newText);
+    
+    // Clear error when user starts typing
+    if (error) setError(null);
+    
+    // Show warning if transcript is getting too long
+    const estimatedTokens = estimateTokens(newText);
+    if (estimatedTokens > MAX_TRANSCRIPT_TOKENS) {
+      setError(`Transcript is too long. Please reduce it to approximately ${MAX_TRANSCRIPT_TOKENS * 4} characters.`);
     }
   };
 
@@ -83,22 +114,28 @@ const TranscriptAnalyzer = () => {
       <div className="card">
         <h1>One on One Analyzer</h1>
         <p>Analyze your 1:1 meetings for insights and improvements.</p>
+        <p className="text-sm text-gray-600">
+          Maximum length: ~{MAX_TRANSCRIPT_TOKENS * 4} characters
+        </p>
         <textarea
           placeholder="Paste your 1:1 meeting transcript here..."
           value={transcript}
-          onChange={(e) => setTranscript(e.target.value)}
-          className="transcript-input"
+          onChange={handleTranscriptChange}
+          className={`transcript-input ${error ? 'error' : ''}`}
         />
+        <div className="text-sm text-gray-600 mb-2">
+          Characters: {transcript.length} / {MAX_TRANSCRIPT_TOKENS * 4}
+        </div>
         <button 
           onClick={analyzeTranscript} 
-          disabled={loading || !transcript.trim()}
+          disabled={loading || !transcript.trim() || error}
           className="analyze-button"
         >
           {loading ? "Analyzing..." : "Analyze Transcript"}
         </button>
 
         {error && (
-          <div className="error-message">
+          <div className="error-message mt-2 p-2 bg-red-100 text-red-700 rounded">
             {error}
           </div>
         )}
