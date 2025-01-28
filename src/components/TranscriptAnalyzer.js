@@ -36,7 +36,7 @@ const TranscriptAnalyzer = () => {
         messages: [
           {
             role: "system",
-            content: `You are an expert final expense telesales coach. Analyze 1:1 meetings and return ONLY a JSON response in the following format, with no additional text or explanation:
+            content: `You are an expert final expense telesales coach. IMPORTANT: You must respond with ONLY valid JSON - no other text, no explanations, no commentary. Your response must exactly match this format:
 
 {
  "tone": "Brief analysis of agent's energy, confidence, and phone presence",
@@ -53,22 +53,23 @@ const TranscriptAnalyzer = () => {
      "Day 5: Review and adjust approach"
    ]
  }
-}`
+}
+
+Any deviation from this exact JSON format will cause an error.`
           },
           { 
             role: "user", 
-            content: `Analyze this transcript and respond ONLY with the JSON format specified above: ${text}` 
+            content: `Analyze this transcript and respond ONLY with the JSON format specified above, with no additional text: ${text}` 
           },
         ],
         temperature: 0.7,
-        response_format: { type: "json_object" },
         max_tokens: 1000
       });
 
       const responseContent = response.choices[0].message.content;
       
       try {
-        const parsedResponse = JSON.parse(responseContent);
+        const parsedResponse = JSON.parse(responseContent.trim());
         setSummary(parsedResponse);
       } catch (parseError) {
         console.error("JSON Parse Error:", parseError);
