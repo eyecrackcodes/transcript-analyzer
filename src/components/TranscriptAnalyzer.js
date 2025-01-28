@@ -101,6 +101,8 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
             <h2 className="text-xl font-bold text-gray-900">Coaching Session Guide</h2>
           </div>
           
+          <SessionController />
+          
           <div className="guide-content">
             {/* Section 1 */}
             <div className="section-item">
