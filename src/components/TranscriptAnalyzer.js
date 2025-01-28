@@ -131,6 +131,55 @@ Any deviation from this exact JSON format will cause an error.`
     <div className="container">
       <div className="card">
         <h1>One on One Analyzer</h1>
+        
+        {/* New Coaching Guide Section */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+          <h2 className="text-lg font-semibold mb-2">Coaching Session Guide</h2>
+          <div className="space-y-4">
+            <div className="flex items-start">
+              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">1</span>
+              <div>
+                <p className="font-medium">Opening Discussion (5-10 mins)</p>
+                <p className="text-gray-600 text-sm">Start with: "How's everything going?"</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start">
+              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">2</span>
+              <div>
+                <p className="font-medium">KPI Review (5-10 mins)</p>
+                <p className="text-gray-600 text-sm">• Review performance metrics</p>
+                <p className="text-gray-600 text-sm">• Focus on previous session's action items</p>
+                <p className="text-gray-600 text-sm">• Identify lowest hanging fruit KPI</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start">
+              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">3</span>
+              <div>
+                <p className="font-medium">Call Review (30-40 mins)</p>
+                <p className="text-gray-600 text-sm">• Review 30-50 minute call at 1.25x or 1.5x speed</p>
+                <p className="text-gray-600 text-sm">• Use recording feature below</p>
+                <p className="text-gray-600 text-sm">• Pause to discuss key moments</p>
+                <p className="text-gray-600 text-sm">• Focus on: script adherence, rapport, objection handling</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start">
+              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-2">4</span>
+              <div>
+                <p className="font-medium">Set Focus Area (5-10 mins)</p>
+                <p className="text-gray-600 text-sm">Identify primary focus for next week:</p>
+                <p className="text-gray-600 text-sm">• KPI improvement</p>
+                <p className="text-gray-600 text-sm">• Script adherence</p>
+                <p className="text-gray-600 text-sm">• Objection handling</p>
+                <p className="text-gray-600 text-sm">• Call control</p>
+                <p className="text-gray-600 text-sm">• Rapport building</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <p>Analyze your 1:1 meetings for insights and improvements.</p>
         
         <div className="mb-6">
