@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import OpenAI from "openai";
-import "../index.css"; // Import global styles
+import "../index.css";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -11,36 +11,22 @@ const TranscriptAnalyzer = () => {
   const [transcript, setTranscript] = useState("");
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const analyzeWithAI = async (text) => {
     try {
       setLoading(true);
+      setError(null);
+
       const response = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
             role: "system",
-            content: `As an expert final expense telesales coach, analyze 1:1 meetings against these KPIs:
+            content: `You are an expert final expense telesales coach. Analyze 1:1 meetings and return ONLY a JSON response in the following format, with no additional text or explanation:
 
-Required KPIs:
-- RPA's (revenue producing activities) per day: 300 minimum average
-- Talk time: 3 hours minimum or 240 minutes minimum
-- Leads Taken: 8 per day minimum on performance queue or 10 per day in training queue
-- Close rate: 25% in performance queue and 13% in training queue
-- Average Anual premium: Between $900-$1200. If below 900 then agent is selling on price if above 1200 their placement may be impacted.
-
-Key Areas to Assess:
-- Phone presence and energy level
-- Script compliance and customization
-- Objection handling skills
-- Closing techniques
-- Follow-up strategies
-- Time management
-- CRM usage
-
-Return analysis as JSON:
 {
- "tone": "Analyze agent's energy, confidence, and phone presence",
+ "tone": "Brief analysis of agent's energy, confidence, and phone presence",
  "metrics": [
    "Format each metric as: KPI Name: Actual (Gap/Surplus vs Required)",
    "Example: 'Leads Taken: 6 (-2 from required 8)'"
@@ -54,17 +40,30 @@ Return analysis as JSON:
      "Day 5: Review and adjust approach"
    ]
  }
-}`,
+}`
           },
-          { role: "user", content: text },
+          { 
+            role: "user", 
+            content: `Analyze this transcript and respond ONLY with the JSON format specified above: ${text}` 
+          },
         ],
         temperature: 0.7,
+        response_format: { type: "json_object" }, // Enforce JSON response format
       });
 
-      const parsedResponse = JSON.parse(response.choices[0].message.content);
-      setSummary(parsedResponse);
-    } catch (error) {
-      console.error("Error:", error);
+      const responseContent = response.choices[0].message.content;
+      
+      try {
+        const parsedResponse = JSON.parse(responseContent);
+        setSummary(parsedResponse);
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError);
+        setError("Failed to parse AI response. Please try again.");
+        setSummary(null);
+      }
+    } catch (apiError) {
+      console.error("API Error:", apiError);
+      setError("Failed to analyze transcript. Please try again.");
       setSummary(null);
     } finally {
       setLoading(false);
@@ -72,6 +71,10 @@ Return analysis as JSON:
   };
 
   const analyzeTranscript = async () => {
+    if (!transcript.trim()) {
+      setError("Please enter a transcript to analyze");
+      return;
+    }
     await analyzeWithAI(transcript);
   };
 
@@ -84,10 +87,21 @@ Return analysis as JSON:
           placeholder="Paste your 1:1 meeting transcript here..."
           value={transcript}
           onChange={(e) => setTranscript(e.target.value)}
+          className="transcript-input"
         />
-        <button onClick={analyzeTranscript} disabled={loading}>
+        <button 
+          onClick={analyzeTranscript} 
+          disabled={loading || !transcript.trim()}
+          className="analyze-button"
+        >
           {loading ? "Analyzing..." : "Analyze Transcript"}
         </button>
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
         {summary && (
           <div className="summary">
@@ -98,11 +112,9 @@ Return analysis as JSON:
             <div className="summary-item">
               <h3>Performance Metrics</h3>
               <ul>
-                {Array.isArray(summary.metrics)
-                  ? summary.metrics.map((metric, i) => (
-                      <li key={i}>{metric}</li>
-                    ))
-                  : "Metrics data unavailable"}
+                {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
+                  <li key={i}>{metric}</li>
+                ))}
               </ul>
             </div>
             <div className="summary-item">
@@ -111,9 +123,9 @@ Return analysis as JSON:
             </div>
             <div className="summary-item full">
               <h3>Development Plan</h3>
-              <p>Focus Area: {summary.weeklyFocus.focus}</p>
+              <p>Focus Area: {summary.weeklyFocus?.focus}</p>
               <ul>
-                {summary.weeklyFocus.steps.map((step, i) => (
+                {summary.weeklyFocus?.steps?.map((step, i) => (
                   <li key={i}>{step}</li>
                 ))}
               </ul>
