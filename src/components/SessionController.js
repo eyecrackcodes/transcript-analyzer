@@ -25,12 +25,14 @@ const SessionController = ({
   }, [isRecording, activeSection, setActiveSection]);
 
   const handleSectionComplete = () => {
-    setCompletedSections([...completedSections, activeSection]);
-    if (activeSection < sections.length) {
-      setActiveSection(activeSection + 1);
-    } else {
-      setIsTimerRunning(false);
-      setActiveSection(0);
+    if (activeSection > 0 && activeSection <= sections.length) {
+      setCompletedSections([...completedSections, activeSection]);
+      if (activeSection < sections.length) {
+        setActiveSection(activeSection + 1);
+      } else {
+        setIsTimerRunning(false);
+        setActiveSection(0);
+      }
     }
   };
 
@@ -69,33 +71,37 @@ const SessionController = ({
       </div>
 
       <div className="flex items-center space-x-4">
-        <SessionTimer
-          duration={sections[activeSection - 1].duration}
-          isRunning={isTimerRunning}
-          onComplete={handleSectionComplete}
-        />
-        <div>
-          <h4 className="font-medium text-gray-700">
-            Current Section: {sections[activeSection - 1].title}
-          </h4>
-          <p className="text-sm text-gray-500">
-            Section {activeSection} of {sections.length}
-          </p>
-          <div className="mt-2 flex gap-1">
-            {sections.map((section, index) => (
-              <div
-                key={section.id}
-                className={`w-6 h-1 rounded ${
-                  completedSections.includes(index + 1)
-                    ? 'bg-green-500'
-                    : index + 1 === activeSection
-                    ? 'bg-blue-500'
-                    : 'bg-gray-200'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+        {activeSection > 0 && activeSection <= sections.length && (
+          <>
+            <SessionTimer
+              duration={sections[activeSection - 1].duration}
+              isRunning={isTimerRunning}
+              onComplete={handleSectionComplete}
+            />
+            <div>
+              <h4 className="font-medium text-gray-700">
+                Current Section: {sections[activeSection - 1].title}
+              </h4>
+              <p className="text-sm text-gray-500">
+                Section {activeSection} of {sections.length}
+              </p>
+              <div className="mt-2 flex gap-1">
+                {sections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    className={`w-6 h-1 rounded ${
+                      completedSections.includes(index + 1)
+                        ? 'bg-green-500'
+                        : index + 1 === activeSection
+                        ? 'bg-blue-500'
+                        : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
