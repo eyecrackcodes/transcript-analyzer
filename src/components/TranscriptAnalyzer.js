@@ -36,21 +36,36 @@ const TranscriptAnalyzer = () => {
         messages: [
           {
             role: "system",
-            content: `You are an expert final expense telesales coach. IMPORTANT: You must respond with ONLY valid JSON - no other text, no explanations, no commentary. Your response must exactly match this format:
+            content: `You are an elite high-performance sales coach combining the intensity of Wolf of Wall Street, the success mindset of Grant Cardone, and the insurance sales expertise of Andy Elliott and Jeremy Minor. Analyze sales calls against these CRITICAL KPIs:
+
+Required Daily Production Standards:
+- RPAs (Revenue Producing Activities): 300 minimum
+- Talk Time: 240 minutes minimum (4 hours)
+- Leads Taken:
+  * Performance Queue: 8 minimum with 25% close rate
+  * Training Queue: 10 minimum with 18% close rate
+- Average Annual Premium: Target $900-$1200 (below = price selling, above = placement risk)
+
+IMPORTANT: Respond with ONLY this JSON format - no other text:
 
 {
- "tone": "Brief analysis of agent's energy, confidence, and phone presence",
+ "tone": "Brutally honest analysis of energy, conviction, and phone presence. Focus on whether they're bringing enough INTENSITY and HUNGER",
+ "queueMetrics": {
+   "queueType": "performance or training",
+   "leadsTarget": "8 or 10 based on queue",
+   "closeTarget": "25% or 18% based on queue"
+ },
  "metrics": [
-   "Format each metric as: KPI Name: Actual (Gap/Surplus vs Required)",
-   "Example: 'Leads Taken: 6 (-2 from required 8)'"
+   "Format: KPI: Actual (Gap/Surplus vs Required)",
+   "Example: 'RPAs: 250 (-50 from required 300)'"
  ],
- "challenge": "Identify the most critical performance blocker",
+ "challenge": "Most critical MONEY-LOSING behavior that's costing them sales",
  "weeklyFocus": {
-   "focus": "Specific improvement area with highest impact potential",
-   "steps": [
-     "Day 1-2: Specific training/practice activity",
-     "Day 3-4: Implementation with measurable goals",
-     "Day 5: Review and adjust approach"
+   "focus": "Specific improvement area that will make them the MOST MONEY fastest",
+   "actions": [
+     "Day 1-2: Specific drill/practice (must be measurable)",
+     "Day 3-4: Implementation with specific metrics to hit",
+     "Day 5: Review numbers and adjust approach"
    ]
  }
 }
@@ -144,27 +159,45 @@ Any deviation from this exact JSON format will cause an error.`
         {summary && (
           <div className="summary">
             <div className="summary-item">
-              <h3>Agent Presence & Tone</h3>
-              <p>{summary.tone}</p>
+              <h3 className="text-xl font-bold text-gray-900">Phone Presence Analysis</h3>
+              <p className="mt-2">{summary.tone}</p>
             </div>
+            
             <div className="summary-item">
-              <h3>Performance Metrics</h3>
-              <ul>
+              <h3 className="text-xl font-bold text-gray-900">Queue Information</h3>
+              <div className="mt-2">
+                <p><strong>Queue Type:</strong> {summary.queueMetrics?.queueType}</p>
+                <p><strong>Required Leads:</strong> {summary.queueMetrics?.leadsTarget}</p>
+                <p><strong>Target Close Rate:</strong> {summary.queueMetrics?.closeTarget}</p>
+              </div>
+            </div>
+
+            <div className="summary-item">
+              <h3 className="text-xl font-bold text-gray-900">Performance Metrics</h3>
+              <ul className="mt-2 space-y-2">
                 {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
-                  <li key={i}>{metric}</li>
+                  <li key={i} className="flex items-center">
+                    <span className="mr-2">📊</span>
+                    {metric}
+                  </li>
                 ))}
               </ul>
             </div>
+
             <div className="summary-item">
-              <h3>Primary Challenge</h3>
-              <p>{summary.challenge}</p>
+              <h3 className="text-xl font-bold text-red-600">Critical Challenge</h3>
+              <p className="mt-2 font-medium">{summary.challenge}</p>
             </div>
+
             <div className="summary-item full">
-              <h3>Development Plan</h3>
-              <p>Focus Area: {summary.weeklyFocus?.focus}</p>
-              <ul>
-                {summary.weeklyFocus?.steps?.map((step, i) => (
-                  <li key={i}>{step}</li>
+              <h3 className="text-xl font-bold text-green-700">Action Plan</h3>
+              <p className="mt-2 font-medium">Focus Area: {summary.weeklyFocus?.focus}</p>
+              <ul className="mt-4 space-y-3">
+                {summary.weeklyFocus?.actions?.map((action, i) => (
+                  <li key={i} className="flex items-start">
+                    <span className="mr-2">✅</span>
+                    {action}
+                  </li>
                 ))}
               </ul>
             </div>
