@@ -18,7 +18,7 @@ const TranscriptAnalyzer = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [completedSections, setCompletedSections] = useState([]);
-  
+  const [isRecording, setIsRecording] = useState(false);
 
   const analyzeWithAI = async (text) => {
     try {
@@ -226,44 +226,71 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
 
           {summary && (
             <div className="mt-6 space-y-6">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                <h3 className="font-semibold text-gray-800 mb-2">Agent Presence & Tone</h3>
-                <p className="text-gray-700">{summary.tone}</p>
+              {/* Agent Presence & Tone */}
+              <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
+                <h3 className="text-lg font-bold text-blue-900 mb-3">Agent Presence & Tone</h3>
+                <p className="text-gray-700 leading-relaxed">{summary.tone}</p>
               </div>
 
+              {/* Queue Metrics */}
               {summary.queueMetrics && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                  <h3 className="font-semibold text-gray-800 mb-2">Queue Metrics</h3>
-                  <div className="space-y-2">
-                    <p className="text-gray-700"><strong>Queue Type:</strong> {summary.queueMetrics.queueType}</p>
-                    <p className="text-gray-700"><strong>Required Leads:</strong> {summary.queueMetrics.leadsTarget}</p>
-                    <p className="text-gray-700"><strong>Close Rate Target:</strong> {summary.queueMetrics.closeTarget}</p>
+                <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
+                  <h3 className="text-lg font-bold text-blue-900 mb-4">Queue Metrics</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium mb-1">Queue Type</p>
+                      <p className="text-lg font-semibold text-gray-800 capitalize">{summary.queueMetrics.queueType}</p>
+                    </div>
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium mb-1">Required Leads</p>
+                      <p className="text-lg font-semibold text-gray-800">{summary.queueMetrics.leadsTarget}</p>
+                    </div>
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium mb-1">Close Rate Target</p>
+                      <p className="text-lg font-semibold text-gray-800">{summary.queueMetrics.closeTarget}</p>
+                    </div>
                   </div>
                 </div>
               )}
 
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                <h3 className="font-semibold text-gray-800 mb-2">Performance Metrics</h3>
-                <ul className="space-y-2">
+              {/* Performance Metrics */}
+              <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
+                <h3 className="text-lg font-bold text-blue-900 mb-4">Performance Metrics</h3>
+                <div className="grid grid-cols-1 gap-3">
                   {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
-                    <li key={i} className="text-gray-700">{metric}</li>
+                    <div key={i} className="p-3 bg-gray-50 rounded-lg flex items-center">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                      <p className="text-gray-700">{metric}</p>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                <h3 className="font-semibold text-gray-800 mb-2">Critical Challenge</h3>
-                <p className="text-gray-700">{summary.challenge}</p>
+              {/* Critical Challenge */}
+              <div className="bg-white rounded-lg shadow-sm border border-red-100 p-6">
+                <h3 className="text-lg font-bold text-red-900 mb-3">Critical Challenge</h3>
+                <div className="bg-red-50 border border-red-100 rounded-lg p-4">
+                  <p className="text-gray-700">{summary.challenge}</p>
+                </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                <h3 className="font-semibold text-gray-800 mb-2">Development Plan</h3>
-                <p className="text-gray-700 mb-2"><strong>Focus Area:</strong> {summary.weeklyFocus?.focus}</p>
-                <ul className="space-y-2">
+              {/* Development Plan */}
+              <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
+                <h3 className="text-lg font-bold text-green-900 mb-4">Development Plan</h3>
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Focus Area</p>
+                  <p className="text-gray-800 font-medium">{summary.weeklyFocus?.focus}</p>
+                </div>
+                <div className="space-y-3">
                   {summary.weeklyFocus?.actions?.map((action, i) => (
-                    <li key={i} className="text-gray-700">• {action}</li>
+                    <div key={i} className="flex items-start bg-green-50 rounded-lg p-4">
+                      <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 flex-shrink-0">
+                        {i + 1}
+                      </span>
+                      <p className="text-gray-700">{action}</p>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           )}
