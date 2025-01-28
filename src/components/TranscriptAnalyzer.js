@@ -1,21 +1,12 @@
 import React, { useState } from "react";
 import OpenAI from "openai";
 import "../index.css";
+import VoiceRecorder from './VoiceRecorder';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
-
-// Rough approximation of tokens (4 characters ≈ 1 token)
-const estimateTokens = (text) => {
-  return Math.ceil(text.length / 4);
-};
-
-// Maximum allowed transcript length (leaving room for system prompt)
-const MAX_TRANSCRIPT_TOKENS = 6000; // Conservative limit to leave room for system message and response
-
-import VoiceRecorder from './VoiceRecorder';
 
 const TranscriptAnalyzer = () => {
   const [transcript, setTranscript] = useState("");
@@ -27,12 +18,6 @@ const TranscriptAnalyzer = () => {
     try {
       setLoading(true);
       setError(null);
-
-      const estimatedTokens = estimateTokens(text);
-      if (estimatedTokens > MAX_TRANSCRIPT_TOKENS) {
-        throw new Error(`Transcript is too long. Please reduce it to approximately ${MAX_TRANSCRIPT_TOKENS * 4} characters or less.`);
-      }
-
       const response = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
@@ -70,14 +55,9 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
      "Day 5: Review numbers and adjust approach"
    ]
  }
-}
-
-Any deviation from this exact JSON format will cause an error.`
+}`
           },
-          { 
-            role: "user", 
-            content: `Analyze this transcript and respond ONLY with the JSON format specified above, with no additional text: ${text}` 
-          },
+          { role: "user", content: text },
         ],
         temperature: 0.7,
         max_tokens: 1000
@@ -95,27 +75,10 @@ Any deviation from this exact JSON format will cause an error.`
       }
     } catch (apiError) {
       console.error("API Error:", apiError);
-      const errorMessage = apiError.message.includes('maximum context length') 
-        ? "Transcript is too long. Please submit a shorter transcript."
-        : "Failed to analyze transcript. Please try again.";
-      setError(errorMessage);
+      setError("Failed to analyze transcript. Please try again.");
       setSummary(null);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleTranscriptChange = (e) => {
-    const newText = e.target.value;
-    setTranscript(newText);
-    
-    // Clear error when user starts typing
-    if (error) setError(null);
-    
-    // Show warning if transcript is getting too long
-    const estimatedTokens = estimateTokens(newText);
-    if (estimatedTokens > MAX_TRANSCRIPT_TOKENS) {
-      setError(`Transcript is too long. Please reduce it to approximately ${MAX_TRANSCRIPT_TOKENS * 4} characters.`);
     }
   };
 
@@ -128,7 +91,7 @@ Any deviation from this exact JSON format will cause an error.`
   };
 
   return (
-    <div className="container">
+    <div className="container mx-auto px-4 py-8">
       <div className="card">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">One on One Analyzer</h1>
         
@@ -218,85 +181,79 @@ Any deviation from this exact JSON format will cause an error.`
           
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
             <h3 className="font-semibold text-gray-800 mb-2">Record Conversation</h3>
-        
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">Record Conversation</h2>
-          <VoiceRecorder onTranscriptionComplete={setTranscript} openai={openai} />
-        </div>
-
-        <p className="text-sm text-gray-600 mt-6">
-          Or paste a transcript below (Maximum length: ~{MAX_TRANSCRIPT_TOKENS * 4} characters)
-        </p>
-        <textarea
-          placeholder="Paste your 1:1 meeting transcript here..."
-          value={transcript}
-          onChange={handleTranscriptChange}
-          className={`transcript-input ${error ? 'error' : ''}`}
-        />
-        <div className="text-sm text-gray-600 mb-2">
-          Characters: {transcript.length} / {MAX_TRANSCRIPT_TOKENS * 4}
-        </div>
-        <button 
-          onClick={analyzeTranscript} 
-          disabled={loading || !transcript.trim() || error}
-          className="analyze-button"
-        >
-          {loading ? "Analyzing..." : "Analyze Transcript"}
-        </button>
-
-        {error && (
-          <div className="error-message mt-2 p-2 bg-red-100 text-red-700 rounded">
-            {error}
+            <VoiceRecorder onTranscriptionComplete={setTranscript} openai={openai} />
           </div>
-        )}
 
-        {summary && (
-          <div className="summary">
-            <div className="summary-item">
-              <h3 className="text-xl font-bold text-gray-900">Phone Presence Analysis</h3>
-              <p className="mt-2">{summary.tone}</p>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 mb-2">
+              Or paste a transcript below (Maximum length: ~24000 characters)
+            </p>
+            <textarea
+              placeholder="Paste your 1:1 meeting transcript here..."
+              value={transcript}
+              onChange={(e) => setTranscript(e.target.value)}
+              className="w-full h-40 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <button
+            onClick={analyzeTranscript}
+            disabled={loading || !transcript.trim()}
+            className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Analyzing..." : "Analyze Transcript"}
+          </button>
+
+          {error && (
+            <div className="text-red-500 text-sm mt-2 p-3 bg-red-50 rounded-lg">
+              {error}
             </div>
-            
-            <div className="summary-item">
-              <h3 className="text-xl font-bold text-gray-900">Queue Information</h3>
-              <div className="mt-2">
-                <p><strong>Queue Type:</strong> {summary.queueMetrics?.queueType}</p>
-                <p><strong>Required Leads:</strong> {summary.queueMetrics?.leadsTarget}</p>
-                <p><strong>Target Close Rate:</strong> {summary.queueMetrics?.closeTarget}</p>
+          )}
+
+          {summary && (
+            <div className="mt-6 space-y-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Agent Presence & Tone</h3>
+                <p className="text-gray-700">{summary.tone}</p>
+              </div>
+
+              {summary.queueMetrics && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                  <h3 className="font-semibold text-gray-800 mb-2">Queue Metrics</h3>
+                  <div className="space-y-2">
+                    <p className="text-gray-700"><strong>Queue Type:</strong> {summary.queueMetrics.queueType}</p>
+                    <p className="text-gray-700"><strong>Required Leads:</strong> {summary.queueMetrics.leadsTarget}</p>
+                    <p className="text-gray-700"><strong>Close Rate Target:</strong> {summary.queueMetrics.closeTarget}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Performance Metrics</h3>
+                <ul className="space-y-2">
+                  {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
+                    <li key={i} className="text-gray-700">{metric}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Critical Challenge</h3>
+                <p className="text-gray-700">{summary.challenge}</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Development Plan</h3>
+                <p className="text-gray-700 mb-2"><strong>Focus Area:</strong> {summary.weeklyFocus?.focus}</p>
+                <ul className="space-y-2">
+                  {summary.weeklyFocus?.actions?.map((action, i) => (
+                    <li key={i} className="text-gray-700">• {action}</li>
+                  ))}
+                </ul>
               </div>
             </div>
-
-            <div className="summary-item">
-              <h3 className="text-xl font-bold text-gray-900">Performance Metrics</h3>
-              <ul className="mt-2 space-y-2">
-                {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
-                  <li key={i} className="flex items-center">
-                    <span className="mr-2">📊</span>
-                    {metric}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="summary-item">
-              <h3 className="text-xl font-bold text-red-600">Critical Challenge</h3>
-              <p className="mt-2 font-medium">{summary.challenge}</p>
-            </div>
-
-            <div className="summary-item full">
-              <h3 className="text-xl font-bold text-green-700">Action Plan</h3>
-              <p className="mt-2 font-medium">Focus Area: {summary.weeklyFocus?.focus}</p>
-              <ul className="mt-4 space-y-3">
-                {summary.weeklyFocus?.actions?.map((action, i) => (
-                  <li key={i} className="flex items-start">
-                    <span className="mr-2">✅</span>
-                    {action}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
