@@ -18,7 +18,7 @@ const TranscriptAnalyzer = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [completedSections, setCompletedSections] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
+
 
   const analyzeWithAI = async (text) => {
     try {
