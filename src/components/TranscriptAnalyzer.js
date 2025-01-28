@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import OpenAI from "openai";
 import "../index.css";
 import VoiceRecorder from './VoiceRecorder';
-import SessionController from './SessionController';
-import SessionTimer from './SessionTimer';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -15,6 +13,10 @@ const TranscriptAnalyzer = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  const [completedSections, setCompletedSections] = useState([]);
+  const [isRecording, setIsRecording] = useState(false);
 
   const analyzeWithAI = async (text) => {
     try {
@@ -103,7 +105,7 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
             <h2 className="text-xl font-bold text-gray-900">Coaching Session Guide</h2>
           </div>
           
-          <SessionController />
+          <SessionController isRecording={isRecording} />
           
           <div className="guide-content">
             {/* Section 1 */}
@@ -187,7 +189,11 @@ IMPORTANT: Respond with ONLY this JSON format - no other text:
           
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
             <h3 className="font-semibold text-gray-800 mb-2">Record Conversation</h3>
-            <VoiceRecorder onTranscriptionComplete={setTranscript} openai={openai} />
+            <VoiceRecorder 
+              onTranscriptionComplete={setTranscript} 
+              openai={openai}
+              onRecordingChange={setIsRecording}
+            />
           </div>
 
           <div className="mt-4">
