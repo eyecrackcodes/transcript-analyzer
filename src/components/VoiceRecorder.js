@@ -1,13 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Mic, Square, Loader } from 'lucide-react';
-import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
-
-const VoiceRecorder = ({ onTranscriptionComplete }) => {
+const VoiceRecorder = ({ onTranscriptionComplete, openai }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
@@ -63,11 +57,6 @@ const VoiceRecorder = ({ onTranscriptionComplete }) => {
       
       // Convert blob to File object
       const file = new File([audioBlob], 'recording.wav', { type: 'audio/wav' });
-
-      // Create FormData and append file
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('model', 'whisper-1');
 
       // Transcribe using OpenAI Whisper API
       const response = await openai.audio.transcriptions.create({
