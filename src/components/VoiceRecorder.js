@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { Mic, Square, Loader } from 'lucide-react';
 
 const VoiceRecorder = ({ onTranscriptionComplete, openai }) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -106,7 +105,7 @@ const VoiceRecorder = ({ onTranscriptionComplete, openai }) => {
               disabled={isProcessing}
               className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
-              <Mic className="w-5 h-5" />
+              <span className="text-xl">🎤</span>
               <span>Start Recording</span>
             </button>
           ) : (
@@ -114,7 +113,7 @@ const VoiceRecorder = ({ onTranscriptionComplete, openai }) => {
               onClick={stopRecording}
               className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
             >
-              <Square className="w-5 h-5" />
+              <span className="text-xl">⬛</span>
               <span>Stop Recording</span>
             </button>
           )}
@@ -123,7 +122,7 @@ const VoiceRecorder = ({ onTranscriptionComplete, openai }) => {
         {/* Processing Status */}
         {isProcessing && (
           <div className="flex items-center space-x-2 text-gray-600">
-            <Loader className="w-5 h-5 animate-spin" />
+            <div className="animate-spin text-xl">⚡</div>
             <span>Processing recording...</span>
           </div>
         )}
