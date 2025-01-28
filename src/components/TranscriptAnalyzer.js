@@ -15,6 +15,8 @@ const estimateTokens = (text) => {
 // Maximum allowed transcript length (leaving room for system prompt)
 const MAX_TRANSCRIPT_TOKENS = 6000; // Conservative limit to leave room for system message and response
 
+import VoiceRecorder from './VoiceRecorder';
+
 const TranscriptAnalyzer = () => {
   const [transcript, setTranscript] = useState("");
   const [summary, setSummary] = useState(null);
@@ -130,8 +132,14 @@ Any deviation from this exact JSON format will cause an error.`
       <div className="card">
         <h1>One on One Analyzer</h1>
         <p>Analyze your 1:1 meetings for insights and improvements.</p>
-        <p className="text-sm text-gray-600">
-          Maximum length: ~{MAX_TRANSCRIPT_TOKENS * 4} characters
+        
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-2">Record Conversation</h2>
+          <VoiceRecorder onTranscriptionComplete={setTranscript} openai={openai} />
+        </div>
+
+        <p className="text-sm text-gray-600 mt-6">
+          Or paste a transcript below (Maximum length: ~{MAX_TRANSCRIPT_TOKENS * 4} characters)
         </p>
         <textarea
           placeholder="Paste your 1:1 meeting transcript here..."
