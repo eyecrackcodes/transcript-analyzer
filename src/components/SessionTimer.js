@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const SessionTimer = ({ duration, isRunning, onComplete }) => {
-  const [timeLeft, setTimeLeft] = useState(duration * 60); // Convert minutes to seconds
+  const [timeLeft, setTimeLeft] = useState(duration * 60);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const SessionTimer = ({ duration, isRunning, onComplete }) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, onComplete]);
+  }, [isRunning, onComplete, timeLeft]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -33,13 +33,11 @@ const SessionTimer = ({ duration, isRunning, onComplete }) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Calculate progress percentage
   const progress = ((duration * 60 - timeLeft) / (duration * 60)) * 100;
 
   return (
     <div className="flex items-center space-x-2">
       <div className="relative w-24 h-24">
-        {/* Circular progress background */}
         <svg className="w-full h-full" viewBox="0 0 100 100">
           <circle
             className="text-gray-200"
@@ -50,7 +48,6 @@ const SessionTimer = ({ duration, isRunning, onComplete }) => {
             cx="50"
             cy="50"
           />
-          {/* Progress circle */}
           <circle
             className="text-blue-600 transition-all duration-300"
             strokeWidth="8"
@@ -64,7 +61,6 @@ const SessionTimer = ({ duration, isRunning, onComplete }) => {
             cy="50"
           />
         </svg>
-        {/* Timer text */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <span className="text-lg font-semibold">{formatTime(timeLeft)}</span>
         </div>
