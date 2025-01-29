@@ -4,7 +4,14 @@ import OpenAI from 'openai';
 import SessionTimer from './SessionTimer';
 import SessionController from './SessionController';
 
-const analyzeTranscript = async () => {
+const TranscriptAnalyzer = () => {
+  const [transcript, setTranscript] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [summary, setSummary] = useState(null);
+  const openai = new OpenAI(process.env.OPENAI_API_KEY);
+
+  const analyzeTranscript = async () => {
     if (!transcript.trim()) {
       setError("Please enter a transcript to analyze");
       return;
