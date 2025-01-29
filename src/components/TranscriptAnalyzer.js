@@ -19,7 +19,7 @@ const analyzeTranscript = async () => {
       messages: [
         {
           role: "system",
-          content: `You are a laser-focused sales coaching optimizer. Provide a STRICTLY FORMATTED JSON response with the following structure:
+          content: `IMPORTANT: You MUST respond ONLY with a valid JSON object in this exact format:
 
 {
   "queueMetrics": {
@@ -28,13 +28,13 @@ const analyzeTranscript = async () => {
   },
   "tone": "string description of communication tone",
   "metrics": [
-    "Metric 1: Detailed description",
-    "Metric 2: Detailed description",
-    "Metric 3: Detailed description"
+    "Metric 1: value",
+    "Metric 2: value", 
+    "Metric 3: value"
   ],
   "challenge": "Primary critical challenge identified",
   "weeklyFocus": {
-    "focus": "Primary skill or area for improvement",
+    "focus": "Primary skill or improvement area",
     "actions": [
       "First specific action item",
       "Second specific action item",
@@ -43,74 +43,65 @@ const analyzeTranscript = async () => {
   }
 }
 
-CONTEXT AND PROTOCOL:
-1. ROLE DETECTION
-   - Identify user as Sales Manager or Director through linguistic patterns
-   - Confirm queue context (Performance/Training) using KPI references
-
-2. SINGULAR FOCUS SELECTION (For Managers)
-   a) Force rank potential focus areas by 30-day revenue impact potential
-   b) Select ONLY THE TOP opportunity meeting:
-      - Impacts ≥2 KPIs
-      - Fixable within 7 days
-      - Has clear success metrics
-
-3. OUTPUT STRUCTURE GUIDANCE
-   - queueMetrics: Detect sales role and context
-   - tone: Assess communication energy and approach
-   - metrics: Identify top 3 performance indicators
-   - challenge: Pinpoint most critical performance barrier
-   - weeklyFocus: Define precise improvement strategy
-
-Example Performance Scenario:
-[Role: Sales Manager - Performance Queue]
-[Diagnostic] 
-- Avg Premium: $844 (6.2% below floor) 
-- RPA/Hour: 13.4 (11% below target)
-- Needs Analysis Completion: 68%
-
-[Single Weekly Priority]
-Premium Justification Mastery
-
-[Success Visualization]
-"Mastering this adds $156 avg premium = $7,800+ monthly per agent"
-
-[3-Part Mastery Plan]
-1) DRILL: "Dignity Cost Calculation" practice pre-shift
-2) TRACK: Score 5 premium justifications daily
-3) VALIDATE: 80% proper usage in Friday call review
-
-[Script Blueprint]
-Agent: "That seems high..."
-Coach: "Mrs. Smith, when arranging your mother's services last year, what shocked you most about costs?... Exactly. Our plan prevents that burden."
-
-[Contamination Warning]
-"Avoid lead qualification discussions - schedule those for Thursday"
-
-IMPORTANT RULES:
-1. ALWAYS return a valid JSON object
-2. Be precise and data-driven
-3. Base analysis on the provided transcript
-4. If insufficient data, use best possible interpretation`
+Guidelines:
+- Analyze the transcript objectively
+- Provide concise, actionable insights
+- Ensure JSON is parseable
+- Be direct and specific`
         },
         { role: "user", content: transcript }
       ],
       temperature: 0.6,
-      max_tokens: 1200
+      max_tokens: 1200,
+      response_format: { type: "json_object" }
     });
     
     // Get the response content
     const responseContent = response.choices[0].message.content;
     
     try {
-      // Attempt to parse the JSON
-      const sanitizedContent = responseContent.replace(/```json\n?|\n?```/g, '').trim();
-      const parsedResponse = JSON.parse(sanitizedContent);
+      // Multiple parsing attempts
+      let parsedResponse;
+      
+      // Try parsing directly
+      try {
+        parsedResponse = JSON.parse(responseContent);
+      } catch {
+        // Remove code block markers
+        const sanitizedContent = responseContent
+          .replace(/```json\n?/g, '')
+          .replace(/```/g, '')
+          .trim();
+        
+        // Try parsing sanitized content
+        try {
+          parsedResponse = JSON.parse(sanitizedContent);
+        } catch {
+          // Last resort: extract JSON-like content
+          const jsonMatch = sanitizedContent.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            try {
+              parsedResponse = JSON.parse(jsonMatch[0]);
+            } catch {
+              throw new Error("Could not parse JSON");
+            }
+          } else {
+            throw new Error("No JSON-like content found");
+          }
+        }
+      }
+
+      // Validate parsed response
+      if (!parsedResponse || typeof parsedResponse !== 'object') {
+        throw new Error("Invalid JSON structure");
+      }
+
       setSummary(parsedResponse);
     } catch (parseError) {
       console.error("JSON Parsing Error:", parseError);
       console.error("Raw response content:", responseContent);
-      setError("Failed to parse analysis response. Please try again.");
+      setError("Failed to process AI response. Please try again.");
+      setSummary(null);
     }
   } catch (err) {
     console.error("Analysis Error:", err);
