@@ -86,7 +86,7 @@ const TranscriptAnalyzer = () => {
           { role: "user", content: transcript }
         ],
         temperature: 0.6, // Lower for consistent focus
-        max_tokens: 1200
+        max_tokens: 1200,
         response_format: { type: "json_object" }
       });
       
