@@ -87,6 +87,7 @@ const TranscriptAnalyzer = () => {
         ],
         temperature: 0.6, // Lower for consistent focus
         max_tokens: 1200
+        response_format: { type: "json_object" }
       });
       
       const parsedResponse = JSON.parse(response.choices[0].message.content.trim());
