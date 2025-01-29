@@ -5,21 +5,21 @@ import SessionTimer from './SessionTimer';
 import SessionController from './SessionController';
 
 const analyzeTranscript = async () => {
-  if (!transcript.trim()) {
-    setError("Please enter a transcript to analyze");
-    return;
-  }
-  
-  try {
-    setLoading(true);
-    setError(null);
+    if (!transcript.trim()) {
+      setError("Please enter a transcript to analyze");
+      return;
+    }
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: `IMPORTANT: You MUST respond ONLY with a valid JSON object in this exact format:
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: `IMPORTANT: You MUST respond ONLY with a valid JSON object in this exact format:
 
 {
   "queueMetrics": {
@@ -48,70 +48,68 @@ Guidelines:
 - Provide concise, actionable insights
 - Ensure JSON is parseable
 - Be direct and specific`
-        },
-        { role: "user", content: transcript }
-      ],
-      temperature: 0.6,
-      max_tokens: 1200,
-      response_format: { type: "json_object" }
-    });
-    
-    // Get the response content
-    const responseContent = response.choices[0].message.content;
-    
-    try {
-      // Multiple parsing attempts
-      let parsedResponse;
+          },
+          { role: "user", content: transcript }
+        ],
+        temperature: 0.6,
+        max_tokens: 1200
+      });
       
-      // Try parsing directly
+      // Get the response content
+      const responseContent = response.choices[0].message.content;
+      
       try {
-        parsedResponse = JSON.parse(responseContent);
-      } catch {
-        // Remove code block markers
-        const sanitizedContent = responseContent
-          .replace(/```json\n?/g, '')
-          .replace(/```/g, '')
-          .trim();
+        // Multiple parsing attempts
+        let parsedResponse;
         
-        // Try parsing sanitized content
+        // Try parsing directly
         try {
-          parsedResponse = JSON.parse(sanitizedContent);
+          parsedResponse = JSON.parse(responseContent);
         } catch {
-          // Last resort: extract JSON-like content
-          const jsonMatch = sanitizedContent.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            try {
-              parsedResponse = JSON.parse(jsonMatch[0]);
-            } catch {
-              throw new Error("Could not parse JSON");
+          // Remove code block markers
+          const sanitizedContent = responseContent
+            .replace(/```json\n?/g, '')
+            .replace(/```/g, '')
+            .trim();
+          
+          // Try parsing sanitized content
+          try {
+            parsedResponse = JSON.parse(sanitizedContent);
+          } catch {
+            // Last resort: extract JSON-like content
+            const jsonMatch = sanitizedContent.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              try {
+                parsedResponse = JSON.parse(jsonMatch[0]);
+              } catch {
+                throw new Error("Could not parse JSON");
+              }
+            } else {
+              throw new Error("No JSON-like content found");
             }
-          } else {
-            throw new Error("No JSON-like content found");
           }
         }
-      }
 
-      // Validate parsed response
-      if (!parsedResponse || typeof parsedResponse !== 'object') {
-        throw new Error("Invalid JSON structure");
-      }
+        // Validate parsed response
+        if (!parsedResponse || typeof parsedResponse !== 'object') {
+          throw new Error("Invalid JSON structure");
+        }
 
-      setSummary(parsedResponse);
-    } catch (parseError) {
-      console.error("JSON Parsing Error:", parseError);
-      console.error("Raw response content:", responseContent);
-      setError("Failed to process AI response. Please try again.");
+        setSummary(parsedResponse);
+      } catch (parseError) {
+        console.error("JSON Parsing Error:", parseError);
+        console.error("Raw response content:", responseContent);
+        setError("Failed to process AI response. Please try again.");
+        setSummary(null);
+      }
+    } catch (err) {
+      console.error("Analysis Error:", err);
+      setError("Failed to analyze transcript. Please try again.");
       setSummary(null);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Analysis Error:", err);
-    setError("Failed to analyze transcript. Please try again.");
-    setSummary(null);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
