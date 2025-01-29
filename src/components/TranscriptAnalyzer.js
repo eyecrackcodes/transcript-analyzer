@@ -9,6 +9,7 @@ const TranscriptAnalyzer = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
   const openai = new OpenAI({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY || 'your_fallback_api_key',
     dangerouslyAllowBrowser: true
