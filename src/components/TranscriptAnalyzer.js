@@ -16,8 +16,6 @@ const TranscriptAnalyzer = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [activeSection, setActiveSection] = useState(0);
-  const [completedSections, setCompletedSections] = useState([]);
 
   const analyzeWithAI = async (text) => {
     try {
@@ -100,203 +98,168 @@ IMPORTANT:
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="card">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">One on One Analyzer</h1>
-        
-        {/* Enhanced Coaching Guide Section */}
-        <div className="coaching-guide">
-          <div className="guide-header">
-            <h2 className="text-xl font-bold text-gray-900">Coaching Session Guide</h2>
-          </div>
-          
-          <SessionController isRecording={isRecording} />
-          
-          <div className="guide-content">
-            {/* Section 1 */}
-            <div className="section-item">
-              <div className="section-number">1</div>
-              <div className="section-content">
-                <div className="section-header">
-                  <span className="section-title">Opening Discussion</span>
-                  <span className="time-badge">5-10 mins</span>
-                </div>
-                <div className="section-details">
-                  Open-ended discussion to understand agent's perspective
-                </div>
-              </div>
-            </div>
-
-            {/* Section 2 */}
-            <div className="section-item">
-              <div className="section-number">2</div>
-              <div className="section-content">
-                <div className="section-header">
-                  <span className="section-title">KPI Review</span>
-                  <span className="time-badge">5-10 mins</span>
-                </div>
-                <div className="section-details">
-                  <ul>
-                    <li>Review performance metrics</li>
-                    <li>Focus on previous session's action items</li>
-                    <li>Identify lowest hanging fruit KPI</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 3 */}
-            <div className="section-item">
-              <div className="section-number">3</div>
-              <div className="section-content">
-                <div className="section-header">
-                  <span className="section-title">Call Review</span>
-                  <span className="time-badge">30-40 mins</span>
-                </div>
-                <div className="section-details">
-                  <ul>
-                    <li>Review 30-50 minute call at 1.25x or 1.5x speed</li>
-                    <li>Pause to discuss key moments</li>
-                    <li>Grade script adherence and soft skills</li>
-                    <li>Focus on rapport, objections, and closing</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 4 */}
-            <div className="section-item">
-              <div className="section-number">4</div>
-              <div className="section-content">
-                <div className="section-header">
-                  <span className="section-title">Set Focus Area</span>
-                  <span className="time-badge">5-10 mins</span>
-                </div>
-                <div className="section-details">
-                  <p>Identify primary focus for next week:</p>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    <ul>
-                      <li>KPI improvement</li>
-                      <li>Script adherence</li>
-                      <li>Objection handling</li>
-                      <li>Call control</li>
-                      <li>Rapport building</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">One on One Analyzer</h1>
+          <p className="mt-2 text-gray-600">Analyze your sales performance and get actionable insights</p>
         </div>
 
-        <div className="space-y-4">
-          <p className="text-gray-700">Analyze your 1:1 meetings for insights and improvements.</p>
-          
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-            <h3 className="font-semibold text-gray-800 mb-2">Record Conversation</h3>
-            <VoiceRecorder 
-              onTranscriptionComplete={setTranscript} 
-              openai={openai}
-              onRecordingChange={setIsRecording}
-            />
-          </div>
+        {/* Recording Section */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Record Conversation</h2>
+          <VoiceRecorder 
+            onTranscriptionComplete={setTranscript} 
+            openai={openai}
+            onRecordingChange={setIsRecording}
+          />
+        </div>
 
+        {/* Transcript Input */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">Manual Transcript</h2>
+            <p className="text-sm text-gray-500">Or paste your transcript below</p>
+          </div>
+          <textarea
+            placeholder="Paste your sales call transcript here..."
+            value={transcript}
+            onChange={(e) => setTranscript(e.target.value)}
+            className="w-full min-h-[200px] p-4 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
           <div className="mt-4">
-            <p className="text-sm text-gray-600 mb-2">
-              Or paste a transcript below (Maximum length: ~24000 characters)
-            </p>
-            <textarea
-              placeholder="Paste your 1:1 meeting transcript here..."
-              value={transcript}
-              onChange={(e) => setTranscript(e.target.value)}
-              className="w-full h-40 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <button
+              onClick={analyzeTranscript}
+              disabled={loading || !transcript.trim()}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Analyzing...
+                </span>
+              ) : "Analyze Transcript"}
+            </button>
           </div>
-
-          <button
-            onClick={analyzeTranscript}
-            disabled={loading || !transcript.trim()}
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Analyzing..." : "Analyze Transcript"}
-          </button>
-
           {error && (
-            <div className="text-red-500 text-sm mt-2 p-3 bg-red-50 rounded-lg">
+            <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
               {error}
             </div>
           )}
+        </div>
 
-          {summary && (
-            <div className="mt-6 space-y-6">
-              {/* Agent Presence & Tone */}
-              <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-3">Agent Presence & Tone</h3>
-                <p className="text-gray-700 leading-relaxed">{summary.tone}</p>
-              </div>
-
-              {/* Queue Metrics */}
-              {summary.queueMetrics && (
-                <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
-                  <h3 className="text-lg font-bold text-blue-900 mb-4">Queue Metrics</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-600 font-medium mb-1">Queue Type</p>
-                      <p className="text-lg font-semibold text-gray-800 capitalize">{summary.queueMetrics.queueType}</p>
-                    </div>
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-600 font-medium mb-1">Required Leads</p>
-                      <p className="text-lg font-semibold text-gray-800">{summary.queueMetrics.leadsTarget}</p>
-                    </div>
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-600 font-medium mb-1">Close Rate Target</p>
-                      <p className="text-lg font-semibold text-gray-800">{summary.queueMetrics.closeTarget}</p>
-                    </div>
+        {/* Analysis Results */}
+        {summary && (
+          <div className="mt-8 max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-8 py-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-white">Performance Analysis</h2>
+                  <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-xl">
+                    <span className="block text-sm text-blue-100">Queue Type</span>
+                    <span className="text-xl font-bold text-white capitalize">{summary.queueMetrics?.queueType}</span>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Performance Metrics */}
-              <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-4">Performance Metrics</h3>
-                <div className="grid grid-cols-1 gap-3">
-                  {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
-                    <div key={i} className="p-3 bg-gray-50 rounded-lg flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                      <p className="text-gray-700">{metric}</p>
+              <div className="p-8">
+                {/* Agent Presence & Tone */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </span>
+                    Agent Presence & Tone
+                  </h3>
+                  <div className="bg-blue-50 border-l-4 border-blue-500 rounded-r-xl p-6">
+                    <p className="text-gray-800 text-lg leading-relaxed">{summary.tone}</p>
+                  </div>
+                </div>
+
+                {/* Key Metrics */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Performance Metrics</h3>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <span className="text-sm text-gray-500 block mb-1">Required Leads</span>
+                      <span className="text-2xl font-bold text-gray-900">{summary.queueMetrics?.leadsTarget}</span>
                     </div>
-                  ))}
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <span className="text-sm text-gray-500 block mb-1">Close Rate Target</span>
+                      <span className="text-2xl font-bold text-gray-900">{summary.queueMetrics?.closeTarget}</span>
+                    </div>
+                    {Array.isArray(summary.metrics) && summary.metrics.map((metric, i) => (
+                      <div key={i} className={`rounded-xl p-4 ${
+                        metric.includes('surplus') ? 'bg-green-50' : 
+                        metric.includes('target') ? 'bg-blue-50' : 'bg-red-50'
+                      }`}>
+                        <span className="text-sm text-gray-500 block mb-1">{metric.split(':')[0]}</span>
+                        <span className={`text-xl font-bold ${
+                          metric.includes('surplus') ? 'text-green-700' : 
+                          metric.includes('target') ? 'text-blue-700' : 'text-red-700'
+                        }`}>
+                          {metric.split(':')[1]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Critical Challenge */}
-              <div className="bg-white rounded-lg shadow-sm border border-red-100 p-6">
-                <h3 className="text-lg font-bold text-red-900 mb-3">Critical Challenge</h3>
-                <div className="bg-red-50 border border-red-100 rounded-lg p-4">
-                  <p className="text-gray-700">{summary.challenge}</p>
+                {/* Critical Challenge */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <span className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center mr-3">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </span>
+                    Critical Challenge
+                  </h3>
+                  <div className="bg-red-50 rounded-xl p-6 border-l-4 border-red-500">
+                    <p className="text-gray-800 text-lg">{summary.challenge}</p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Development Plan */}
-              <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
-                <h3 className="text-lg font-bold text-green-900 mb-4">Development Plan</h3>
-                <div className="mb-4">
-                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Focus Area</p>
-                  <p className="text-gray-800 font-medium">{summary.weeklyFocus?.focus}</p>
-                </div>
-                <div className="space-y-3">
-                  {summary.weeklyFocus?.actions?.map((action, i) => (
-                    <div key={i} className="flex items-start bg-green-50 rounded-lg p-4">
-                      <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 flex-shrink-0">
-                        {i + 1}
+                {/* Action Plan */}
+                <div className="bg-gradient-to-b from-green-50 to-white rounded-xl p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                      <span className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
                       </span>
-                      <p className="text-gray-700">{action}</p>
-                    </div>
-                  ))}
+                      Development Plan
+                    </h3>
+                    <span className="px-4 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Priority Focus</span>
+                  </div>
+                  <div className="bg-white rounded-xl border border-green-100 p-6 mb-6">
+                    <h4 className="text-lg font-bold text-green-800 mb-2">Focus Area:</h4>
+                    <p className="text-gray-800 text-lg">{summary.weeklyFocus?.focus}</p>
+                  </div>
+                  <div className="space-y-4">
+                    {summary.weeklyFocus?.actions?.map((action, i) => (
+                      <div key={i} className="flex items-start bg-white rounded-xl p-4 border border-gray-100">
+                        <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-4 flex-shrink-0">
+                          {i + 1}
+                        </div>
+                        <div>
+                          <p className="text-gray-800">{action}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
