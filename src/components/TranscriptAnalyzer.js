@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import VoiceRecorder from './VoiceRecorder';
+import OpenAI from 'openai';
 import SessionTimer from './SessionTimer';
 import SessionController from './SessionController';
 
+
 const TranscriptAnalyzer = () => {
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true
+  });
   const [transcript, setTranscript] = useState("");
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -144,6 +150,7 @@ Required Daily Production Standards:
             <VoiceRecorder 
               onTranscriptionComplete={setTranscript}
               onRecordingChange={setIsRecording}
+              openai={openai}
             />
           </div>
 
