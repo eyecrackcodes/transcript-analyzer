@@ -27,7 +27,7 @@ const TranscriptAnalyzer = () => {
       setError(null);
       
       const response = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -86,13 +86,19 @@ const TranscriptAnalyzer = () => {
           { role: "user", content: transcript }
         ],
         temperature: 0.6, // Lower for consistent focus
-        max_tokens: 1200,
-        response_format: { type: "json_object" }
+        max_tokens: 1200
       });
       
-      // Parse the response content as JSON
-      const parsedResponse = JSON.parse(response.choices[0].message.content);
-      setSummary(parsedResponse);
+      // Parse the response content manually
+      const responseContent = response.choices[0].message.content;
+      
+      try {
+        const parsedResponse = JSON.parse(responseContent);
+        setSummary(parsedResponse);
+      } catch (parseError) {
+        console.error("JSON Parsing Error:", parseError);
+        setError("Failed to parse analysis response. Please try again.");
+      }
     } catch (err) {
       console.error("Analysis Error:", err);
       setError("Failed to analyze transcript. Please try again.");
