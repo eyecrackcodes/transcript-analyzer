@@ -26,7 +26,7 @@ const TranscriptAnalyzer = () => {
       setLoading(true);
       setError(null);
       
-      const response = await window.openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
@@ -86,7 +86,7 @@ const TranscriptAnalyzer = () => {
           { role: "user", content: transcript }
         ],
         temperature: 0.6, // Lower for consistent focus
-        max_tokens: 1000
+        max_tokens: 1200
       });
       
       const parsedResponse = JSON.parse(response.choices[0].message.content.trim());
