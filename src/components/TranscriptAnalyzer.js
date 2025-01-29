@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import VoiceRecorder from './VoiceRecorder';
 import SessionTimer from './SessionTimer';
 import SessionController from './SessionController';
-
 
 const TranscriptAnalyzer = () => {
   const [transcript, setTranscript] = useState("");
@@ -56,11 +54,10 @@ Required Daily Production Standards:
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>One on One Analyzer</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">One on One Analyzer</h1>
+
           {/* Coaching Guide Section */}
           <div className="mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Coaching Session Guide</h2>
@@ -182,10 +179,10 @@ Required Daily Production Standards:
           {/* Results Display */}
           {summary && (
             <div className="mt-8">
-              <Card>
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-800">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="text-white">Performance Analysis</CardTitle>
+                    <h2 className="text-2xl font-bold text-white">Performance Analysis</h2>
                     <div className="bg-white/10 backdrop-blur px-4 py-2 rounded-lg">
                       <span className="block text-xs text-blue-200 uppercase">Queue Type</span>
                       <span className="text-lg font-bold text-white capitalize">
@@ -193,9 +190,9 @@ Required Daily Production Standards:
                       </span>
                     </div>
                   </div>
-                </CardHeader>
+                </div>
                 
-                <CardContent className="space-y-6 mt-6">
+                <div className="p-6 space-y-6">
                   {/* Agent Presence & Tone */}
                   <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Agent Presence & Energy</h3>
@@ -262,12 +259,12 @@ Required Daily Production Standards:
                       ))}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
