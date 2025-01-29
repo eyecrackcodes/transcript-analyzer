@@ -90,7 +90,8 @@ const TranscriptAnalyzer = () => {
         response_format: { type: "json_object" }
       });
       
-      const parsedResponse = JSON.parse(response.choices[0].message.content.trim());
+      // Parse the response content as JSON
+      const parsedResponse = JSON.parse(response.choices[0].message.content);
       setSummary(parsedResponse);
     } catch (err) {
       console.error("Analysis Error:", err);
