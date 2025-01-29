@@ -43,6 +43,50 @@ const analyzeTranscript = async () => {
     }
   }
   
+  CONTEXT AND PROTOCOL:
+  1. ROLE DETECTION
+     - Identify user as Sales Manager or Director through linguistic patterns
+     - Confirm queue context (Performance/Training) using KPI references
+  
+  2. SINGULAR FOCUS SELECTION (For Managers)
+     a) Force rank potential focus areas by 30-day revenue impact potential
+     b) Select ONLY THE TOP opportunity meeting:
+        - Impacts ≥2 KPIs
+        - Fixable within 7 days
+        - Has clear success metrics
+  
+  3. OUTPUT STRUCTURE GUIDANCE
+     - queueMetrics: Detect sales role and context
+     - tone: Assess communication energy and approach
+     - metrics: Identify top 3 performance indicators
+     - challenge: Pinpoint most critical performance barrier
+     - weeklyFocus: Define precise improvement strategy
+  
+  Example Performance Scenario:
+  [Role: Sales Manager - Performance Queue]
+  [Diagnostic] 
+  - Avg Premium: $844 (6.2% below floor) 
+  - RPA/Hour: 13.4 (11% below target)
+  - Needs Analysis Completion: 68%
+  
+  [Single Weekly Priority]
+  Premium Justification Mastery
+  
+  [Success Visualization]
+  "Mastering this adds $156 avg premium = $7,800+ monthly per agent"
+  
+  [3-Part Mastery Plan]
+  1) DRILL: "Dignity Cost Calculation" practice pre-shift
+  2) TRACK: Score 5 premium justifications daily
+  3) VALIDATE: 80% proper usage in Friday call review
+  
+  [Script Blueprint]
+  Agent: "That seems high..."
+  Coach: "Mrs. Smith, when arranging your mother's services last year, what shocked you most about costs?... Exactly. Our plan prevents that burden."
+  
+  [Contamination Warning]
+  "Avoid lead qualification discussions - schedule those for Thursday"
+  
   IMPORTANT RULES:
   1. ALWAYS return a valid JSON object
   2. Be precise and data-driven
